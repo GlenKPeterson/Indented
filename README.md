@@ -14,7 +14,7 @@ indented so that humans can make sense of data structures printed this way.
 
 ## Change Log
 
-### Release 0.0.2 ".stringify() Allow Known Good"
+### Release 0.0.2 ".stringify() Handles All Characters"
  - StringUtils.stringify() should now turn *any* text into a valid Kotlin/Java String.
  If you can prove this wrong, please report it!
  - The output of .stringify() should therefore also be safe to write to a log file.
