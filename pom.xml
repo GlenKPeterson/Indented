@@ -7,11 +7,32 @@
 
 	<groupId>org.organicdesign</groupId>
 	<artifactId>Indented</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2</version>
 	<packaging>jar</packaging>
 
 	<name>Indented</name>
-	<description>Produces pretty-print indented strings that could compile to Kotlin or Java, or at least look like they could.</description>
+	<description>Produces pretty-print indented strings that should compile to Kotlin or Java.</description>
+	<url>https://github.com/GlenKPeterson/Indented</url>
+
+	<licenses>
+		<license>
+			<name>The Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<comments>The license for most of the files in this project.</comments>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>Glen K. Peterson</name>
+			<email>glen@organicdesign.org</email>
+			<organization>PlanBase Inc.</organization>
+		</developer>
+	</developers>
+	<scm>
+		<connection>scm:git:https://github.com/GlenKPeterson/Indented.git</connection>
+		<developerConnection>scm:git:https://github.com/GlenKPeterson/Indented.git</developerConnection>
+		<url>https://github.com/GlenKPeterson/Indented.git</url>
+	</scm>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
