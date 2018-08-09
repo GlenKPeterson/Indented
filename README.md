@@ -22,11 +22,17 @@ Align when multilign
 <dependency>
 	<groupId>org.organicdesign</groupId>
 	<artifactId>Indented</artifactId>
-	<version>0.0.2</version>
+	<version>0.0.3</version>
 </dependency>
 ```
 
 ## Change Log
+
+### Release 0.0.3 2018-08-09
+ - Encoded $ as \u0024 so that behavior is consistent between Java and Kotlin.
+ - Made spaces() return a String instead of a StringBuilder and throw an exception if passed a negative length
+ - Added usage examples in unit tests in both Java and Kotlin
+ - Updated documentation.
 
 ### Release 0.0.2 ".stringify() Handles All Characters"
  - StringUtils.stringify() should now turn *any* text into a valid Kotlin/Java String.

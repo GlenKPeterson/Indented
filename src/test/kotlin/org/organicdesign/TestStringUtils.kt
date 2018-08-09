@@ -63,6 +63,21 @@ class TestStringUtils {
                                null)).indentedStr(0))
     }
 
+    @Test fun testSpaces() {
+        assertEquals("", spaces(0))
+        assertEquals(" ", spaces(1))
+        assertEquals("  ", spaces(2))
+        assertEquals("         ", spaces(9))
+        assertEquals(99, spaces(99).length)
+        assertEquals(99999, spaces(99999).length)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun testSpacesEx1() { spaces(-1) }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun testSpacesEx2() { spaces(-999) }
+
     @Test fun testBasics() {
         assertEquals("[1,\n" +
                      " 2,\n" +
@@ -115,9 +130,11 @@ class TestStringUtils {
         assertEquals("\"いろはにほへど　ちりぬるを\"",
                      stringify("いろはにほへど　ちりぬるを"))
 
-        // TODO: Is this a problem?  Will be in Kotlin.
-        assertEquals("\"\\\$hello\"",
+        // $ is a special character in Kotlin Strings, but not in Java.
+        // This representation works in both languages.
+        assertEquals("\"\\u0024hello\"",
                      stringify("\$hello"))
+        assertEquals("'\\u0024'", charToStr('$'))
 
         // These are (mostly undefined) low unicode characters.
         assertEquals("\"\\u0000,\\u0001,\\u0002,\\u0003,\\u0004,\\u0005,\\u0006\\u0007\\b\"",
@@ -153,8 +170,6 @@ class TestStringUtils {
 
         assertEquals("null", objToStr(0, null))
         assertEquals("'\\\''", objToStr(0, '\''))
-
-        assertEquals(99, spaces(99).length)
     }
 
 }

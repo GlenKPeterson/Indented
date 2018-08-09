@@ -58,31 +58,30 @@ object StringUtils {
     private val SPACES_LENGTH_MINUS_ONE = SPACES.size - 1
 
     /**
-     * Creates a new StringBuilder with the given number of spaces and returns it.
+     * Efficiently returns a String with the given number of spaces.
      * @param len the number of spaces
-     * @return a [StringBuilder] with the specificed number of initial spaces.
+     * @return a [String] with the specificed number of spaces.
      */
     @JvmStatic
-    fun spaces(len: Int): StringBuilder {
-        val sB = StringBuilder()
-        if (len > SPACES_LENGTH_MINUS_ONE) {
-            var remainingLen = len
-            while (remainingLen > SPACES_LENGTH_MINUS_ONE) {
-                sB.append(SPACES[SPACES_LENGTH_MINUS_ONE])
-                remainingLen -= SPACES_LENGTH_MINUS_ONE
+    fun spaces(len: Int): String =
+            when {
+                len < 0                        -> throw IllegalArgumentException("Can't show negative spaces: $len")
+                len <= SPACES_LENGTH_MINUS_ONE -> SPACES[len]
+                else                           -> {
+                    var remainingLen = len
+                    val sB = StringBuilder()
+                    while (remainingLen > SPACES_LENGTH_MINUS_ONE) {
+                        sB.append(SPACES[SPACES_LENGTH_MINUS_ONE])
+                        remainingLen -= SPACES_LENGTH_MINUS_ONE
+                    }
+                    sB.append(SPACES[remainingLen]).toString()
+                }
             }
-            return sB.append(SPACES[remainingLen])
-        } else if (len < 1) {
-            return sB
-        }
-
-        return sB.append(SPACES[len])
-    }
 
     @JvmStatic
     fun iterableToStr(indent: Int, collName: String, ls: Iterable<Any>): String {
         val subIndent: Int = indent + collName.length + 1 // + 1 is for the paren.
-        val spaces: String = spaces(subIndent).toString()
+        val spaces: String = spaces(subIndent)
         return ls.foldIndexed(StringBuilder(spaces(indent))
                                       .append(collName)
                                       .append("("),
@@ -100,7 +99,7 @@ object StringUtils {
     @JvmStatic
     fun listToStr(indent: Int, ls: Iterable<Any>): String {
         val subIndent: Int = indent + 1 // + 1 is for the paren.
-        val spaces: String = spaces(subIndent).toString()
+        val spaces: String = spaces(subIndent)
         return ls.foldIndexed(StringBuilder(spaces(indent))
                                       .append("["),
                               { idx, acc, item ->
@@ -162,7 +161,9 @@ object StringUtils {
              Character.isDefined(codepoint))  ->
                 when (codepoint) {
                     0x22 -> "\\\""
-                    0x24 -> "\\\$" // For all you Kotlin programmers.
+                    // $ is a special character in Kotlin Strings, but not in Java.
+                    // This representation works in both languages.
+                    0x24 -> "\\u0024"
 //                    0x27 -> "\\\'" // charToStr takes care of this instead.
                     0x5c -> "\\\\"
                     else -> codepoint.toChar().toString()

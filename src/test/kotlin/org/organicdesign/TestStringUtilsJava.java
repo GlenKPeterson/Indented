@@ -5,7 +5,9 @@ import org.junit.Test;
 import org.organicdesign.indented.IndentedStringable;
 
 import static org.junit.Assert.assertEquals;
+import static org.organicdesign.indented.StringUtils.charToStr;
 import static org.organicdesign.indented.StringUtils.spaces;
+import static org.organicdesign.indented.StringUtils.stringify;
 
 public class TestStringUtilsJava {
     class Node implements IndentedStringable {
@@ -72,5 +74,10 @@ public class TestStringUtilsJava {
                               new Node(new Node(4),
                                        5,
                                        null)).indentedStr(0));
+    }
+
+    @Test public void testQuestion() {
+        assertEquals("\"\\u0024\"", stringify("$"));
+        assertEquals("'\\u0024'", charToStr('$'));
     }
 }
