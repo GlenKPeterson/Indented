@@ -2,6 +2,20 @@
 
 This project contains tools to implement toString methods that compile to valid Java or Kotlin and are pretty-print
 indented so that humans can make sense of data structures printed this way.
+Examples are in the unit tests to ensure that they compile and work correctly:
+
+* [Kotlin](src/test/kotlin/org/organicdesign/TestStringUtils.kt)
+* [Java](src/test/kotlin/org/organicdesign/TestStringUtilsJava.java)
+
+IntelliJ can format your code like this if you set:
+
+Settings:
+Editor:
+Code Style:
+Java:
+Wrapping and Braces:
+Method Call Arguments:
+Align when multilign
 
 ## Maven Artifact
 ```xml

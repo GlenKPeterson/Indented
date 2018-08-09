@@ -1,6 +1,7 @@
 package org.organicdesign
 
 import org.junit.Test
+import org.organicdesign.indented.IndentedStringable
 import org.organicdesign.indented.StringUtils.charToStr
 import org.organicdesign.indented.StringUtils.floatToStr
 import org.organicdesign.indented.StringUtils.iterableToStr
@@ -11,6 +12,57 @@ import org.organicdesign.indented.StringUtils.stringify
 import kotlin.test.assertEquals
 
 class TestStringUtils {
+    class Node(val left: Node?,
+               val i: Int,
+               val right: Node?): IndentedStringable {
+
+        constructor(i: Int) : this(null, i, null)
+
+        override fun indentedStr(indent: Int): String =
+                if (left == null && right == null) {
+                    "Node($i)"
+                } else {
+                    "Node(${left?.indentedStr(indent + 5) ?: "null"},\n" +
+                    "${spaces(indent + 5)}$i,\n" +
+                    "${spaces(indent + 5)}${right?.indentedStr(indent + 5) ?: "null"})"
+                }
+    }
+
+    // Here's an example of how to make a data structure visible using a very simple binary tree.
+    // The "Node" class is defined above.  Now the data structure looks like itself - and compiles to itself!
+    // It's homoiconic!
+    @Test fun testNode() {
+        assertEquals("Node(Node(Node(1),\n" +
+                     "          2,\n" +
+                     "          Node(3)),\n" +
+                     "     4,\n" +
+                     "     Node(Node(5),\n" +
+                     "          6,\n" +
+                     "          Node(7)))",
+                     Node(Node(Node(1),
+                               2,
+                               Node(3)),
+                          4,
+                          Node(Node(5),
+                               6,
+                               Node(7))).indentedStr(0))
+
+        assertEquals("Node(Node(null,\n" +
+                     "          1,\n" +
+                     "          Node(2)),\n" +
+                     "     3,\n" +
+                     "     Node(Node(4),\n" +
+                     "          5,\n" +
+                     "          null))",
+                     Node(Node(null,
+                               1,
+                               Node(2)),
+                          3,
+                          Node(Node(4),
+                               5,
+                               null)).indentedStr(0))
+    }
+
     @Test fun testBasics() {
         assertEquals("[1,\n" +
                      " 2,\n" +
