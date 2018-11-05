@@ -222,6 +222,7 @@ object StringUtils {
 
     /**
      * Single-quotes a string for Bash, escaping only single quotes.  Returns '' for both the empty string and null.
+     * Will not write out any back-spaces.
      */
     @JvmStatic
     fun bashSingleQuote(s: String?): String {
@@ -255,7 +256,7 @@ object StringUtils {
                 } else {
                     sB.append("\\'")
                 }
-            } else {
+            } else if (c != '\u0008') { // Don't write out backspace.
                 if (outputQuoted) {
                     sB.append(c)
                 } else {

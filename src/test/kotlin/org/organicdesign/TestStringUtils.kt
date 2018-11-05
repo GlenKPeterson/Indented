@@ -207,5 +207,10 @@ class TestStringUtils {
         assertEquals("'a'\\''b'", bashSingleQuote("a'b"))
         assertEquals("'a'\\''b'\\'", bashSingleQuote("a'b'"))
         assertEquals("'a'\\''b'\\''c'", bashSingleQuote("a'b'c"))
+
+        assertEquals("", bashSingleQuote("\u0008"))
+        assertEquals("'hi'", bashSingleQuote("\bhi"))
+        assertEquals("'hi'", bashSingleQuote("h\u0008i"))
+        assertEquals("'hi'", bashSingleQuote("hi\b"))
     }
 }
