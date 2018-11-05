@@ -2,6 +2,7 @@ package org.organicdesign
 
 import org.junit.Test
 import org.organicdesign.indented.IndentedStringable
+import org.organicdesign.indented.StringUtils.bashSingleQuote
 import org.organicdesign.indented.StringUtils.charToStr
 import org.organicdesign.indented.StringUtils.floatToStr
 import org.organicdesign.indented.StringUtils.iterableToStr
@@ -172,4 +173,39 @@ class TestStringUtils {
         assertEquals("'\\\''", objToStr(0, '\''))
     }
 
+    @Test fun testBashStrongQuote() {
+        assertEquals("'boys'", bashSingleQuote("boys"))
+        assertEquals("'boy'\\''s'", bashSingleQuote("boy's"))
+        assertEquals("'boys'\\'", bashSingleQuote("boys'"))
+        assertEquals("\\''boys'", bashSingleQuote("'boys"))
+
+        assertEquals("''", bashSingleQuote(null))
+        assertEquals("''", bashSingleQuote(""))
+        assertEquals("' '", bashSingleQuote(" "))
+        assertEquals("\\'", bashSingleQuote("'"))
+        assertEquals("\\'\\'", bashSingleQuote("''"))
+        assertEquals("\\'\\'\\'", bashSingleQuote("'''"))
+        assertEquals("\\'\\'\\''a'", bashSingleQuote("'''a"))
+        assertEquals("\\'\\'\\''ab'", bashSingleQuote("'''ab"))
+        assertEquals("\\'\\'\\''abc'", bashSingleQuote("'''abc"))
+        assertEquals("\\'\\'\\''abc'\\'", bashSingleQuote("'''abc'"))
+        assertEquals("\\'\\'\\''abc'\\'\\'", bashSingleQuote("'''abc''"))
+        assertEquals("\\'\\'\\''abc'\\'\\'\\'", bashSingleQuote("'''abc'''"))
+        assertEquals("\\'\\'\\''abc'\\'\\'\\''d'", bashSingleQuote("'''abc'''d"))
+        assertEquals("\\'\\'\\''abc'\\'\\'\\''de'", bashSingleQuote("'''abc'''de"))
+        assertEquals("\\'\\'\\''abc'\\'\\'\\''def'", bashSingleQuote("'''abc'''def"))
+        assertEquals("\\'\\'\\''abc'\\'\\'\\''def'\\'", bashSingleQuote("'''abc'''def'"))
+        assertEquals("\\'\\'\\''abc'\\'\\'\\''def'\\'\\'", bashSingleQuote("'''abc'''def''"))
+        assertEquals("\\'\\'\\''abc'\\'\\'\\''def'\\'\\'\\'", bashSingleQuote("'''abc'''def'''"))
+        assertEquals("\\'\\'\\''abc'\\'\\'\\''def'\\'\\'\\''g'", bashSingleQuote("'''abc'''def'''g"))
+        assertEquals("\\'\\'\\''abc'\\'\\'\\''def'\\'\\'\\''gh'", bashSingleQuote("'''abc'''def'''gh"))
+        assertEquals("\\'\\'\\''abc'\\'\\'\\''def'\\'\\'\\''ghi'", bashSingleQuote("'''abc'''def'''ghi"))
+        assertEquals("\\'\\'\\''abc'\\'\\'\\''def'\\'\\'\\''ghi'\\'", bashSingleQuote("'''abc'''def'''ghi'"))
+
+        assertEquals("'a'", bashSingleQuote("a"))
+        assertEquals("'a'\\'", bashSingleQuote("a'"))
+        assertEquals("'a'\\''b'", bashSingleQuote("a'b"))
+        assertEquals("'a'\\''b'\\'", bashSingleQuote("a'b'"))
+        assertEquals("'a'\\''b'\\''c'", bashSingleQuote("a'b'c"))
+    }
 }

@@ -219,4 +219,56 @@ object StringUtils {
             str
         } + "f"
     }
+
+    /**
+     * Single-quotes a string for Bash, escaping only single quotes.  Returns '' for both the empty string and null.
+     */
+    @JvmStatic
+    fun bashSingleQuote(s: String?): String {
+        if ( (s == null) || s.isEmpty() ) {
+            return "''"
+        }
+        var idx = 0
+        val sB = StringBuilder()
+
+        // True if the end of the output up to this point is inside a quote.
+        // We need this because single quotes must be escaped *outside* a quoted String.
+        // That's Right
+        // becomes:
+        // 'That'\''s Right'
+        // So, in the middle of the String, a single quote is escaped "stuff'\''more"
+        // At the end it's:
+        // 'boys'\'
+        // At the beginning:
+        // \''kay'
+        // And multiple in the middle:
+        // 'abc'\'\'\''def'
+        // So we have some state here to tell whether the end of the output so far is inside or outside a quote.
+        var outputQuoted = false
+
+        while (idx < s.length) {
+            val c = s[idx]
+            if (c == '\'') {
+                if (outputQuoted) {
+                    sB.append("'\\'")
+                    outputQuoted = false
+                } else {
+                    sB.append("\\'")
+                }
+            } else {
+                if (outputQuoted) {
+                    sB.append(c)
+                } else {
+                    sB.append("'").append(c)
+                    outputQuoted = true
+                }
+            }
+            idx++
+        }
+        if (outputQuoted) {
+            // Close the quote.
+            sB.append("'")
+        }
+        return sB.toString()
+    }
 }

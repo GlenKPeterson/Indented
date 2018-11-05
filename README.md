@@ -22,11 +22,15 @@ Align when multilign
 <dependency>
 	<groupId>org.organicdesign</groupId>
 	<artifactId>Indented</artifactId>
-	<version>0.0.3</version>
+	<version>0.0.4</version>
 </dependency>
 ```
 
 ## Change Log
+
+### Release 0.0.4 2018-11-05
+ - Added StringUtils.bashSingleQuote() function.
+ - Upgraded Kotlin to 1.3.0.
 
 ### Release 0.0.3 2018-08-09
  - Encoded $ as \u0024 so that behavior is consistent between Java and Kotlin.
