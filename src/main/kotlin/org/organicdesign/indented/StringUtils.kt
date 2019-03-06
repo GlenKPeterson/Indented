@@ -79,7 +79,7 @@ object StringUtils {
             }
 
     @JvmStatic
-    fun iterableToStr(indent: Int, collName: String, ls: Iterable<Any>): String {
+    fun iterableToStr(indent: Int, collName: String, ls: Iterable<Any?>): String {
         val subIndent: Int = indent + collName.length + 1 // + 1 is for the paren.
         val spaces: String = spaces(subIndent)
         return ls.foldIndexed(StringBuilder(spaces(indent))
@@ -97,7 +97,7 @@ object StringUtils {
     }
 
     @JvmStatic
-    fun listToStr(indent: Int, ls: Iterable<Any>): String {
+    fun listToStr(indent: Int, ls: Iterable<Any?>): String {
         val subIndent: Int = indent + 1 // + 1 is for the paren.
         val spaces: String = spaces(subIndent)
         return ls.foldIndexed(StringBuilder(spaces(indent))

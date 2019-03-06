@@ -22,11 +22,15 @@ Align when multilign
 <dependency>
 	<groupId>org.organicdesign</groupId>
 	<artifactId>Indented</artifactId>
-	<version>0.0.4</version>
+	<version>0.0.5</version>
 </dependency>
 ```
 
 ## Change Log
+
+### Release 0.0.5 2019-03-06
+ - Allow StringUtils.iterableToStr() and .listToStr() to allow nulls in the collections.
+ - Upgraded Kotlin to 1.3.21.
 
 ### Release 0.0.4 2018-11-05
  - Added StringUtils.bashSingleQuote() function.
