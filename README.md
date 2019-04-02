@@ -22,13 +22,16 @@ Align when multilign
 <dependency>
 	<groupId>org.organicdesign</groupId>
 	<artifactId>Indented</artifactId>
-	<version>0.0.5</version>
+	<version>0.0.6</version>
 </dependency>
 ```
 
 ## Change Log
+### Release 0.0.6 2019-03-06
+ - Fixed StringUtils.iterableToStr() to only add the indent on the 2nd line.
+ Same with .listToStr()
 
-### Release 0.0.5 2019-03-06
+#### Release 0.0.5 2019-03-06
  - Allow StringUtils.iterableToStr() and .listToStr() to allow nulls in the collections.
  - Upgraded Kotlin to 1.3.21.
 

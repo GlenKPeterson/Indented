@@ -90,12 +90,12 @@ class TestStringUtils {
                      "     3)",
                      iterableToStr(0, "List", listOf(1, 2, 3)))
 
-        assertEquals("   [1,\n" +
+        assertEquals("[1,\n" +
                      "    2,\n" +
                      "    3]",
                      listToStr(3, listOf(1, 2, 3)))
 
-        assertEquals("     List(1,\n" +
+        assertEquals("List(1,\n" +
                      "          2,\n" +
                      "          3)",
                      iterableToStr(5, "List", listOf(1, 2, 3)))

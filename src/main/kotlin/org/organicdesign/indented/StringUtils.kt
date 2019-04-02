@@ -82,8 +82,7 @@ object StringUtils {
     fun iterableToStr(indent: Int, collName: String, ls: Iterable<Any?>): String {
         val subIndent: Int = indent + collName.length + 1 // + 1 is for the paren.
         val spaces: String = spaces(subIndent)
-        return ls.foldIndexed(StringBuilder(spaces(indent))
-                                      .append(collName)
+        return ls.foldIndexed(StringBuilder(collName)
                                       .append("("),
                               { idx, acc, item ->
                                   if (idx > 0) {
@@ -100,8 +99,7 @@ object StringUtils {
     fun listToStr(indent: Int, ls: Iterable<Any?>): String {
         val subIndent: Int = indent + 1 // + 1 is for the paren.
         val spaces: String = spaces(subIndent)
-        return ls.foldIndexed(StringBuilder(spaces(indent))
-                                      .append("["),
+        return ls.foldIndexed(StringBuilder("["),
                               { idx, acc, item ->
                                   if (idx > 0) {
                                       acc.append(",\n")
