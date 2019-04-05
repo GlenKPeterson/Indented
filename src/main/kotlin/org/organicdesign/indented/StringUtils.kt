@@ -89,7 +89,7 @@ object StringUtils {
                                       acc.append(",\n")
                                       acc.append(spaces)
                                   }
-                                  acc.append(objToStr(subIndent, item))
+                                  acc.append(indent(subIndent, item))
                               })
                 .append(")")
                 .toString()
@@ -105,31 +105,38 @@ object StringUtils {
                                       acc.append(",\n")
                                       acc.append(spaces)
                                   }
-                                  acc.append(objToStr(subIndent, item))
+                                  acc.append(indent(subIndent, item))
                               })
                 .append("]")
                 .toString()
     }
 
     @JvmStatic
-    fun objToStr(indent: Int, item: Any?): String =
+    fun indent(indent: Int, item: Any?): String =
             when (item) {
                 null                  -> "null"
                 is IndentedStringable -> item.indentedStr(indent)
                 is String             -> stringify(item)
+                is Map.Entry<*,*>     -> {
+                    val key = indent(indent, item.key)
+                    key + "=" + indent(indent + key.length + 1, item.value)
+                }
+                is Pair<*,*>          -> {
+                    val first = indent(indent, item.first)
+                    first + " to " + indent(indent + first.length + 4, item.second)
+                }
                 is Char               -> charToStr(item)
                 is Float              -> floatToStr(item)
+                is List<*>            -> iterableToStr(indent, "listOf", item)
+                is Map<*,*>           -> iterableToStr(indent, "mapOf", item.entries)
+                is Set<*>             -> iterableToStr(indent, "setOf", item)
+                is Iterable<*>        -> iterableToStr(indent, item::class.java.simpleName, item)
+// Interesting, but too much info.
+//                is Array<*>           -> iterableToStr(indent, "arrayOf<${item::class.java.componentType.simpleName}>",
+//                                                       item.toList())
+                is Array<*>           -> iterableToStr(indent, "arrayOf", item.toList())
                 else                  -> item.toString()
             }
-
-//    @JvmStatic
-//    fun objToStr(item: Any?): String = when (item) {
-//        null      -> "null"
-//        is String -> stringify(item)
-//        is Char   -> charToStr(item)
-//        is Float  -> floatToStr(item)
-//        else      -> item.toString()
-//    }
 
     private val codePointStrings: Array<String> = arrayOf(
             "\\u0000",

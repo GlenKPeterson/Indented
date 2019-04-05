@@ -7,12 +7,13 @@ import org.organicdesign.indented.StringUtils.charToStr
 import org.organicdesign.indented.StringUtils.floatToStr
 import org.organicdesign.indented.StringUtils.iterableToStr
 import org.organicdesign.indented.StringUtils.listToStr
-import org.organicdesign.indented.StringUtils.objToStr
+import org.organicdesign.indented.StringUtils.indent
 import org.organicdesign.indented.StringUtils.spaces
 import org.organicdesign.indented.StringUtils.stringify
 import kotlin.test.assertEquals
 
 class TestStringUtils {
+    @Suppress("MemberVisibilityCanBePrivate")
     class Node(val left: Node?,
                val i: Int,
                val right: Node?): IndentedStringable {
@@ -80,6 +81,11 @@ class TestStringUtils {
     fun testSpacesEx2() { spaces(-999) }
 
     @Test fun testBasics() {
+        assertEquals("arrayOf(1,\n" +
+                     "        2,\n" +
+                     "        3)",
+                     indent(0, arrayOf(1, 2, 3)))
+
         assertEquals("[1,\n" +
                      " 2,\n" +
                      " 3]",
@@ -90,15 +96,52 @@ class TestStringUtils {
                      "     3)",
                      iterableToStr(0, "List", listOf(1, 2, 3)))
 
-        assertEquals("[1,\n" +
+        assertEquals("hey[1,\n" +
                      "    2,\n" +
                      "    3]",
-                     listToStr(3, listOf(1, 2, 3)))
+                     "hey" + listToStr(3, listOf(1, 2, 3)))
 
-        assertEquals("List(1,\n" +
+        assertEquals("helloList(1,\n" +
                      "          2,\n" +
                      "          3)",
-                     iterableToStr(5, "List", listOf(1, 2, 3)))
+                     "hello" + iterableToStr(5, "List", listOf(1, 2, 3)))
+
+
+        assertEquals("mapOf(\"hello\"=Node(Node(null,\n" +
+                     "                        1,\n" +
+                     "                        Node(2)),\n" +
+                     "                   3,\n" +
+                     "                   Node(Node(4),\n" +
+                     "                        5,\n" +
+                     "                        null)),\n" +
+                     "      \"goodbye\"=mapOf(\"world\"=Node(Node(7),\n" +
+                     "                                   8,\n" +
+                     "                                   Node(9)),\n" +
+                     "                      \"hello again\"=listOf(\"the\",\n" +
+                     "                                           \"quick\",\n" +
+                     "                                           \"brown\",\n" +
+                     "                                           \"fox\"),\n" +
+                     "                      \"another\"=listOf(1 to 'a',\n" +
+                     "                                       2 to 'b',\n" +
+                     "                                       3 to 'c')))",
+                     iterableToStr(0, "mapOf",
+                                   mapOf<Any?,Any?>("hello" to Node(Node(null,
+                                                                         1,
+                                                                         Node(2)),
+                                                                    3,
+                                                                    Node(Node(4),
+                                                                         5,
+                                                                         null)),
+                                                    "goodbye" to mapOf<Any?,Any?>("world" to Node(Node(7),
+                                                                                                  8,
+                                                                                                  Node(9)),
+                                                                                  "hello again" to listOf("the",
+                                                                                                          "quick",
+                                                                                                          "brown",
+                                                                                                          "fox"),
+                                                                                  "another" to listOf(1 to 'a',
+                                                                                                      2 to 'b',
+                                                                                                      3 to 'c'))).entries))
 
         assertEquals("null", stringify(null))
 
@@ -169,8 +212,8 @@ class TestStringUtils {
         assertEquals("'\\''", charToStr('\''))
         assertEquals("'c'", charToStr('c'))
 
-        assertEquals("null", objToStr(0, null))
-        assertEquals("'\\\''", objToStr(0, '\''))
+        assertEquals("null", indent(0, null))
+        assertEquals("'\\\''", indent(0, '\''))
     }
 
     @Test fun testBashStrongQuote() {

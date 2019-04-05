@@ -1,8 +1,11 @@
 # Indented
 
-This project contains tools to implement toString methods that compile to valid Java or Kotlin and are pretty-print
-indented so that humans can make sense of data structures printed this way.
-Examples are in the unit tests to ensure that they compile and work correctly:
+Tools to make debugging methods whose String output compiles to valid Java or Kotlin and
+is pretty-print indented for easy reading.
+Indentation makes data structures much easier to understand at a glance.
+Being able to compile your debugging output is a huge win for setting up data conditions for unit tests.
+
+Usage examples are in the unit tests to ensure that they compile and work correctly:
 
 * [Kotlin](src/test/kotlin/org/organicdesign/TestStringUtils.kt)
 * [Java](src/test/kotlin/org/organicdesign/TestStringUtilsJava.java)
@@ -20,7 +23,12 @@ Align when multilign
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.organicdesign.indented/Indented/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.organicdesign.indented/Indented)
 
 ## Change Log
-### Release 0.0.6 2019-03-06
+### Release 0.0.7 2019-04-04
+ - Renamed StringUtils.objToStr() to indent().
+ This is the method is now meant as a catch-all to throw any object at.
+ It will treat objects as indented strings when practical, or just call .toString() when not.
+
+#### Release 0.0.6 2019-03-06
  - Fixed StringUtils.iterableToStr() to only add the indent on the 2nd line.
  Same with .listToStr()
 
