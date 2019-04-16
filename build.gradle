@@ -20,7 +20,7 @@ plugins {
 
 repositories {
     mavenLocal()
-    jcenter()
+//    jcenter()
     maven {
         url = 'http://repo.maven.apache.org/maven2'
     }
@@ -44,7 +44,7 @@ task javadocJar(type: Jar) {
 
 group = 'org.organicdesign.indented'
 archivesBaseName = 'Indented'
-version = '0.0.7'
+version = '0.0.8'
 description = 'Indented'
 sourceCompatibility = '1.8'
 

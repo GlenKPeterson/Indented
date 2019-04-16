@@ -1,5 +1,12 @@
 package org.organicdesign.indented
 
+import java.io.File
+
+fun <K,V> Pair<K,V>.toEntry() = object: Map.Entry<K,V> {
+    override val key: K = first
+    override val value: V = second
+}
+
 /**
  * The goal of this project is to produce pretty-print indented strings that could compile to Kotlin or Java,
  * or at least look like they could (some abbreviations for brevity).
@@ -111,6 +118,39 @@ object StringUtils {
                 .toString()
     }
 
+    /**
+     * Use this to pretty-print a class with one field per line.
+     */
+    @JvmStatic
+    fun oneFieldPerLine(
+            indent: Int,
+            collName: String,
+            fields: Iterable<Map.Entry<String,Any?>>
+    ): String {
+        val subIndent: Int = indent + collName.length + 1 // + 1 is for the paren.
+        val spaces: String = spaces(subIndent)
+        return fields.foldIndexed(StringBuilder(collName)
+                                      .append("("),
+                              { idx, acc, item ->
+                                  if (idx > 0) {
+                                      acc.append(",\n")
+                                      acc.append(spaces)
+                                  }
+                                  acc.append(item.key).append("=").append(indent(subIndent, item.value))
+                              })
+                .append(")")
+                .toString()
+    }
+
+    /*
+     * Kotlin wrapper because Pair does not implement Map.Entry and Pair is not accessible in Java.
+     */
+    fun oneFieldPerLineK(
+            indent: Int,
+            collName: String,
+            fields: Iterable<Pair<String,Any?>>
+    ): String = oneFieldPerLine(indent, collName, fields.map { it.toEntry() })
+
     @JvmStatic
     fun indent(indent: Int, item: Any?): String =
             when (item) {
@@ -135,6 +175,30 @@ object StringUtils {
 //                is Array<*>           -> iterableToStr(indent, "arrayOf<${item::class.java.componentType.simpleName}>",
 //                                                       item.toList())
                 is Array<*>           -> iterableToStr(indent, "arrayOf", item.toList())
+                is File               -> {
+                    val details = StringBuilder()
+                    if(item.exists()) {
+                        if (item.isHidden) {
+                            details.append(" hidden")
+                        }
+                        if (item.isDirectory) {
+                            details.append(" dir")
+                        } else if (item.isFile) {
+                            details.append(" file")
+                        }
+                        details.append(" ")
+                        details.append(if (item.canRead()) "r" else "_")
+                        details.append(if (item.canWrite()) "w" else "_")
+                        details.append(if (item.canExecute()) "x" else "_")
+
+                    }
+                    val ret = StringBuilder("File(")
+                    ret.append(stringify(item.absolutePath))
+                    if (details.length > 0) {
+                        ret.append(details)
+                    }
+                    ret.append(")").toString()
+                }
                 else                  -> item.toString()
             }
 

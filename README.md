@@ -23,6 +23,11 @@ Align when multilign
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.organicdesign.indented/Indented/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.organicdesign.indented/Indented)
 
 ## Change Log
+### Release 0.0.8 2019-04-16
+ - Added shorthand methods to StringUtils: oneMethodPerLine() and oneMethodPerLineK().
+ The second is a convenience method for Kotlin.
+ For an example see the [unit test](src/test/kotlin/org/organicdesign/TestStringUtils.kt).
+
 ### Release 0.0.7 2019-04-04
  - Renamed StringUtils.objToStr() to indent().
  This is the method is now meant as a catch-all to throw any object at.

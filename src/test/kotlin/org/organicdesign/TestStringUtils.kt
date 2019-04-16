@@ -1,6 +1,5 @@
 package org.organicdesign
 
-import org.junit.Test
 import org.organicdesign.indented.IndentedStringable
 import org.organicdesign.indented.StringUtils.bashSingleQuote
 import org.organicdesign.indented.StringUtils.charToStr
@@ -8,8 +7,12 @@ import org.organicdesign.indented.StringUtils.floatToStr
 import org.organicdesign.indented.StringUtils.iterableToStr
 import org.organicdesign.indented.StringUtils.listToStr
 import org.organicdesign.indented.StringUtils.indent
+import org.organicdesign.indented.StringUtils.oneFieldPerLine
+import org.organicdesign.indented.StringUtils.oneFieldPerLineK
 import org.organicdesign.indented.StringUtils.spaces
 import org.organicdesign.indented.StringUtils.stringify
+import java.io.File
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class TestStringUtils {
@@ -255,5 +258,26 @@ class TestStringUtils {
         assertEquals("'hi'", bashSingleQuote("\bhi"))
         assertEquals("'hi'", bashSingleQuote("h\u0008i"))
         assertEquals("'hi'", bashSingleQuote("hi\b"))
+    }
+
+    @Test fun testOneFieldPerLine() {
+        var f = File("yes")
+        assertEquals("  MyClass(str=\"hi\",\n" +
+                     "          f=File(\"${f.absolutePath}\"),\n" +
+                     "          i=3)",
+                     "  " + oneFieldPerLineK(2, "MyClass",
+                                            listOf("str" to "hi",
+                                                   "f" to f,
+                                                   "i" to 3)))
+
+        f = File("./src/main/kotlin/org/organicdesign/indented/StringUtils.kt")
+        assertEquals("  MyClass(str=\"hi\",\n" +
+                     "          f=File(\"${f.absolutePath}\" file rw_),\n" +
+                     "          i=3)",
+                     "  " + oneFieldPerLineK(2, "MyClass",
+                                             listOf("str" to "hi",
+                                                    "f" to f,
+                                                    "i" to 3)))
+
     }
 }
