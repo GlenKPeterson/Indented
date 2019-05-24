@@ -23,6 +23,9 @@ Align when multilign
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.organicdesign.indented/Indented/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.organicdesign.indented/Indented)
 
 ## Change Log
+### Release 0.0.10 2019-05-24
+ - Updated all dependency versions.
+
 ### Release 0.0.9 2019-04-17
  - Added shorthand methods to StringUtils: fieldsOnOneLine() and fieldsOnOneLineK().
  The second is a convenience method for Kotlin.
