@@ -3,11 +3,11 @@ package org.organicdesign
 import org.organicdesign.indented.IndentedStringable
 import org.organicdesign.indented.StringUtils.bashSingleQuote
 import org.organicdesign.indented.StringUtils.charToStr
+import org.organicdesign.indented.StringUtils.fieldsOnOneLineK
 import org.organicdesign.indented.StringUtils.floatToStr
+import org.organicdesign.indented.StringUtils.indent
 import org.organicdesign.indented.StringUtils.iterableToStr
 import org.organicdesign.indented.StringUtils.listToStr
-import org.organicdesign.indented.StringUtils.indent
-import org.organicdesign.indented.StringUtils.oneFieldPerLine
 import org.organicdesign.indented.StringUtils.oneFieldPerLineK
 import org.organicdesign.indented.StringUtils.spaces
 import org.organicdesign.indented.StringUtils.stringify
@@ -260,19 +260,28 @@ class TestStringUtils {
         assertEquals("'hi'", bashSingleQuote("hi\b"))
     }
 
+    @Test fun testFile() {
+        val f = File("./src/main/kotlin/org/organicdesign/indented/")
+        assertEquals("File(\"${f.canonicalPath}\" dir rwx)",
+                     indent(0, f))
+    }
+
     @Test fun testOneFieldPerLine() {
         var f = File("yes")
         assertEquals("  MyClass(str=\"hi\",\n" +
-                     "          f=File(\"${f.absolutePath}\"),\n" +
+                     "          f=File(\"${f.canonicalPath}\"),\n" +
+                     "          t,\n" +
                      "          i=3)",
                      "  " + oneFieldPerLineK(2, "MyClass",
                                             listOf("str" to "hi",
                                                    "f" to f,
+                                                   "t" to true,
+                                                   "f2" to false,
                                                    "i" to 3)))
 
         f = File("./src/main/kotlin/org/organicdesign/indented/StringUtils.kt")
         assertEquals("  MyClass(str=\"hi\",\n" +
-                     "          f=File(\"${f.absolutePath}\" file rw_),\n" +
+                     "          f=File(\"${f.canonicalPath}\" file rw_),\n" +
                      "          i=3)",
                      "  " + oneFieldPerLineK(2, "MyClass",
                                              listOf("str" to "hi",
@@ -280,4 +289,14 @@ class TestStringUtils {
                                                     "i" to 3)))
 
     }
+
+    @Test fun testFieldsOnOneLine() {
+        assertEquals("  MyClass(str=\"hi\", t, i=3)",
+                     "  " + fieldsOnOneLineK(2, "MyClass",
+                                             listOf("str" to "hi",
+                                                    "t" to true,
+                                                    "f" to false,
+                                                    "i" to 3)))
+    }
+
 }

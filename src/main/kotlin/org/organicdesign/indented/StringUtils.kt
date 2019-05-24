@@ -129,14 +129,25 @@ object StringUtils {
     ): String {
         val subIndent: Int = indent + collName.length + 1 // + 1 is for the paren.
         val spaces: String = spaces(subIndent)
-        return fields.foldIndexed(StringBuilder(collName)
+        var needsComma = false
+        return fields.fold(StringBuilder(collName)
                                       .append("("),
-                              { idx, acc, item ->
-                                  if (idx > 0) {
-                                      acc.append(",\n")
-                                      acc.append(spaces)
+                              { acc, item ->
+                                  if (needsComma) {
+                                      acc.append(",\n").append(spaces)
+                                      needsComma = false
                                   }
-                                  acc.append(item.key).append("=").append(indent(subIndent, item.value))
+                                  val value = item.value
+                                  if (value is Boolean) {
+                                      if (value == true) {
+                                          acc.append(item.key)
+                                          needsComma = true
+                                      }
+                                  } else {
+                                      acc.append(item.key).append("=").append(indent(subIndent, value))
+                                      needsComma = true
+                                  }
+                                  acc
                               })
                 .append(")")
                 .toString()
@@ -150,6 +161,49 @@ object StringUtils {
             collName: String,
             fields: Iterable<Pair<String,Any?>>
     ): String = oneFieldPerLine(indent, collName, fields.map { it.toEntry() })
+
+    /**
+     * Use this to pretty-print a class with all fields on one line.
+     */
+    @JvmStatic
+    fun fieldsOnOneLine(
+            indent: Int,
+            collName: String,
+            fields: Iterable<Map.Entry<String,Any?>>
+    ): String {
+        val subIndent: Int = indent + collName.length + 1 // + 1 is for the paren.
+        var needsComma = false
+        return fields.fold(StringBuilder(collName)
+                                          .append("("),
+                                  { acc, item ->
+                                      if (needsComma) {
+                                          acc.append(", ")
+                                          needsComma = false
+                                      }
+                                      val value = item.value
+                                      if (value is Boolean) {
+                                          if (value == true) {
+                                              acc.append(item.key)
+                                              needsComma = true
+                                          }
+                                      } else {
+                                          acc.append(item.key).append("=").append(indent(subIndent, value))
+                                          needsComma = true
+                                      }
+                                      acc
+                                  })
+                .append(")")
+                .toString()
+    }
+
+    /*
+     * Kotlin wrapper because Pair does not implement Map.Entry and Pair is not accessible in Java.
+     */
+    fun fieldsOnOneLineK(
+            indent: Int,
+            collName: String,
+            fields: Iterable<Pair<String,Any?>>
+    ): String = fieldsOnOneLine(indent, collName, fields.map { it.toEntry() })
 
     @JvmStatic
     fun indent(indent: Int, item: Any?): String =
@@ -193,7 +247,7 @@ object StringUtils {
 
                     }
                     val ret = StringBuilder("File(")
-                    ret.append(stringify(item.absolutePath))
+                    ret.append(stringify(item.canonicalPath))
                     if (details.length > 0) {
                         ret.append(details)
                     }
