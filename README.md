@@ -23,6 +23,10 @@ Align when multilign
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.organicdesign.indented/Indented/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.organicdesign.indented/Indented)
 
 ## Change Log
+### Release 0.0.11 2020-04-01
+ - Updated all dependency versions.
+ - Upgraded Gradle to 6.3 and switched to .kts gradle file format.
+
 ### Release 0.0.10 2019-05-24
  - Updated all dependency versions.
 
