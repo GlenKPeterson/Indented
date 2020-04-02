@@ -20,8 +20,7 @@ Wrapping and Braces:
 Method Call Arguments:
 Align when multilign
 
-## "Download"
-https://search.maven.org/artifact/org.organicdesign.indented/Indented
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.organicdesign.indented/Indented/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.organicdesign.indented/Indented)
 
 ## Change Log
 ### Release 0.0.11 2020-04-01
