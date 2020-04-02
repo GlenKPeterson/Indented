@@ -12,6 +12,8 @@ import org.jetbrains.dokka.gradle.DokkaTask
 
 // I think if you can see it here, then it's ready to be "Closed" and deployed manually:
 // https://oss.sonatype.org/content/groups/staging/org/organicdesign/indented/Indented/
+// Here once released:
+// https://search.maven.org/artifact/org.organicdesign.indented/Indented
 // Or maybe here once released:
 // https://repo.maven.apache.org/maven2/org/organicdesign/indented/Indented/
 
