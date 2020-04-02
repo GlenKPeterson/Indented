@@ -15,11 +15,13 @@ import org.jetbrains.dokka.gradle.DokkaTask
 // Or maybe here once released:
 // https://repo.maven.apache.org/maven2/org/organicdesign/indented/Indented/
 
+// This takes these values from ~/gradle.properties which should have valid values for each of these names in it.
+// https://docs.gradle.org/current/userguide/build_environment.html
 val ossrhUsername: String by project
 val ossrhPassword: String by project
 
 plugins {
-//    `java-library`
+    `java-library`
     `maven-publish`
     signing
     id("org.jetbrains.dokka") version "0.10.1"
@@ -45,6 +47,10 @@ java {
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
+            from(components["java"])
+            afterEvaluate {
+                artifactId = tasks.jar.get().archiveBaseName.get()
+            }
             versionMapping {
                 usage("java-api") {
                     fromResolutionOf("runtimeClasspath")
@@ -54,6 +60,9 @@ publishing {
                 }
             }
             pom {
+                name.set(rootProject.name)
+                packaging = "jar"
+                description.set(project.description)
                 url.set("https://github.com/GlenKPeterson/Indented")
                 licenses {
                     license {
