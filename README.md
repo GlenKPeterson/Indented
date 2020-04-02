@@ -20,12 +20,15 @@ Wrapping and Braces:
 Method Call Arguments:
 Align when multilign
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.organicdesign.indented/Indented/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.organicdesign.indented/Indented)
+## "Download"
+https://search.maven.org/artifact/org.organicdesign.indented/Indented
 
 ## Change Log
 ### Release 0.0.11 2020-04-01
  - Updated all dependency versions.
  - Upgraded Gradle to 6.3 and switched to .kts gradle file format.
+ - Note: the javadoc are in dokka format, not normal Javadoc due to https://github.com/Kotlin/dokka/issues/294
+ If you have a better work-around, let me know!
 
 ### Release 0.0.10 2019-05-24
  - Updated all dependency versions.

@@ -5,17 +5,12 @@ import org.jetbrains.dokka.gradle.DokkaTask
 // https://central.sonatype.org/pages/gradle.html
 
 // To upload to sonatype (have to deploy manually)
-// Now:
-// ./gradlew clean assemble publish --info
-// Used to be:
-// ./gradlew clean uploadArchives --info
+// ./gradlew clean assemble javadocJar publish --info
 
 // I think if you can see it here, then it's ready to be "Closed" and deployed manually:
 // https://oss.sonatype.org/content/groups/staging/org/organicdesign/indented/Indented/
 // Here once released:
-// https://search.maven.org/artifact/org.organicdesign.indented/Indented
-// Or maybe here once released:
-// https://repo.maven.apache.org/maven2/org/organicdesign/indented/Indented/
+// https://repo1.maven.org/maven2/org/organicdesign/indented/Indented/
 
 // This takes these values from ~/gradle.properties which should have valid values for each of these names in it.
 // https://docs.gradle.org/current/userguide/build_environment.html
@@ -23,7 +18,6 @@ val ossrhUsername: String by project
 val ossrhPassword: String by project
 
 plugins {
-    `java-library`
     `maven-publish`
     signing
     id("org.jetbrains.dokka") version "0.10.1"
@@ -42,7 +36,7 @@ version = "0.0.11"
 description = "Make debugging methods whose String output compiles to valid Java or Kotlin and is pretty-print indented for easy reading."
 
 java {
-    withJavadocJar()
+//    withJavadocJar()
     withSourcesJar()
 }
 
@@ -98,25 +92,18 @@ publishing {
                 password = ossrhPassword
             }
         }
-//        mavenDeployer {
-//            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-//
-//            repository(url: "") {
-//                authentication(userName: ossrhUsername, password: ossrhPassword)
-//            }
-//
-//            snapshotRepository(url: "") {
-//                authentication(userName: ossrhUsername, password: ossrhPassword)
-//            }
-//        }
     }
 }
 
-tasks.javadoc {
-    if (JavaVersion.current().isJava9Compatible) {
-        (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
-    }
-}
+//task javadocJar(Jar::class, dependsOn: dokkaJavadoc) {
+//    archiveClassifier.set("javadoc")
+//}
+
+//tasks.javadoc {
+//    if (JavaVersion.current().isJava9Compatible) {
+//        (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
+//    }
+//}
 
 tasks {
     val dokka by getting(DokkaTask::class) {
@@ -125,14 +112,20 @@ tasks {
     }
 }
 
+tasks.register<Jar>("javadocJar") {
+    archiveClassifier.set("javadoc")
+    dependsOn("dokka")
+    from("$buildDir/dokka")
+}
+
 signing {
     useGpgCmd()
     sign(publishing.publications["mavenJava"])
 }
 
-tasks.compileJava {
-    options.encoding = "UTF-8"
-}
+//tasks.compileJava {
+//    options.encoding = "UTF-8"
+//}
 repositories {
     mavenCentral()
     maven { url = uri("https://dl.bintray.com/kotlin/dokka") }
