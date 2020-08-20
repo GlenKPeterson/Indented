@@ -24,9 +24,12 @@ Align when multilign
 [![javadoc](https://javadoc.io/badge2/org.organicdesign/Indented/javadoc.svg)](https://javadoc.io/doc/org.organicdesign/Indented)
 
 ## Change Log
-## Release 0.0.12 2020-08-20
+### Release 0.0.13 2020-08-20
  - Updated to Kotlin 1.4.0 and Dokka 1.4.0-rc which hopefully gives us real javadoc now.
  - Changed repository name to remove redundant "indented"
+
+##### Release 0.0.12 2020-08-20
+ - Dud release with Javadoc issue.
 
 ### Release 0.0.11 2020-04-01
  - Updated all dependency versions.

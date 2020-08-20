@@ -30,7 +30,7 @@ dependencies {
 }
 
 group = "org.organicdesign"
-version = "0.0.12"
+version = "0.0.13"
 description = "Make debugging methods whose String output compiles to valid Java or Kotlin and is pretty-print indented for easy reading."
 
 java {
@@ -41,7 +41,7 @@ java {
 tasks.register<Jar>("dokkaJar") {
     archiveClassifier.set("javadoc")
     dependsOn("dokkaJavadoc")
-    from("$buildDir/dokka")
+    from("$buildDir/dokka/javadoc/")
 }
 
 publishing {
