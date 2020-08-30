@@ -8,8 +8,8 @@ fun <K,V> Pair<K,V>.toEntry() = object: Map.Entry<K,V> {
 }
 
 /**
- * The goal of this project is to produce pretty-print indented strings that could compile to Kotlin or Java,
- * or at least look like they could (some abbreviations for brevity).
+ * Utilities for producing pretty-print indented strings that could nearly compile to Kotlin or Java
+ * (some abbreviations for brevity).
  */
 object StringUtils {
     private val SPACES = arrayOf("",
@@ -85,6 +85,9 @@ object StringUtils {
                 }
             }
 
+    /**
+     * Pretty-prints any iterable with the given indent and class/field name
+     */
     @JvmStatic
     fun iterableToStr(indent: Int, collName: String, ls: Iterable<Any?>): String {
         val subIndent: Int = indent + collName.length + 1 // + 1 is for the paren.
@@ -102,6 +105,9 @@ object StringUtils {
                 .toString()
     }
 
+    /**
+     * Pretty-prints any Iterable with the given indent as a list/array.
+     */
     @JvmStatic
     fun listToStr(indent: Int, ls: Iterable<Any?>): String {
         val subIndent: Int = indent + 1 // + 1 is for the paren.
@@ -153,7 +159,7 @@ object StringUtils {
                 .toString()
     }
 
-    /*
+    /**
      * Kotlin wrapper because Pair does not implement Map.Entry and Pair is not accessible in Java.
      */
     fun oneFieldPerLineK(
@@ -196,7 +202,7 @@ object StringUtils {
                 .toString()
     }
 
-    /*
+    /**
      * Kotlin wrapper because Pair does not implement Map.Entry and Pair is not accessible in Java.
      */
     fun fieldsOnOneLineK(
@@ -205,6 +211,11 @@ object StringUtils {
             fields: Iterable<Pair<String,Any?>>
     ): String = fieldsOnOneLine(indent, collName, fields.map { it.toEntry() })
 
+    /**
+     * Takes a shot at pretty-printing anything you throw at it.
+     * If it's already an [IndentedStringable], it calls [IndentedStringable.indentedStr].
+     * Otherwise takes its best shot at indenting whatever it finds.
+     */
     @JvmStatic
     fun indent(indent: Int, item: Any?): String =
             when (item) {
@@ -248,7 +259,7 @@ object StringUtils {
                     }
                     val ret = StringBuilder("File(")
                     ret.append(stringify(item.canonicalPath))
-                    if (details.length > 0) {
+                    if (details.isNotEmpty()) {
                         ret.append(details)
                     }
                     ret.append(")").toString()
@@ -320,7 +331,7 @@ object StringUtils {
                 }
             }
 
-    // Surround strings with double quotes and escape any internal double-quotes
+    /** Surround strings with double quotes and escape any internal double-quotes */
     @JvmStatic
     fun charToStr(c: Char?): String =
             when (c) {
@@ -330,6 +341,7 @@ object StringUtils {
                 else -> "\'" + escapeChar(c.toInt()) + "\'"
             }
 
+    /** Prints float so it looks like a Float and not a Double. */
     @JvmStatic
     fun floatToStr(f: Float?): String {
         if (f == null) {

@@ -20,7 +20,7 @@ plugins {
     `maven-publish`
     signing
     id("org.jetbrains.dokka") version "1.4.0-rc"
-    id("com.github.ben-manes.versions") version "0.28.0"
+    id("com.github.ben-manes.versions") version "0.29.0"
     kotlin("jvm") version "1.4.0"
 }
 dependencies {
@@ -30,12 +30,23 @@ dependencies {
 }
 
 group = "org.organicdesign"
-version = "0.0.13"
+version = "0.0.14"
 description = "Make debugging methods whose String output compiles to valid Java or Kotlin and is pretty-print indented for easy reading."
 
 java {
 //    withJavadocJar()
     withSourcesJar()
+}
+
+// This doesn't work.  It's here for a Dokka question or bug report.
+tasks.dokkaHtml.configure {
+    dokkaSourceSets {
+        configureEach { // Or source set name, for single-platform the default source sets are `main` and `test`
+            // List of files with module and package documentation
+            // https://kotlinlang.org/docs/reference/kotlin-doc.html#module-and-package-documentation
+            includes = listOf("package.md", "module.md")
+        }
+    }
 }
 
 tasks.register<Jar>("dokkaJar") {
