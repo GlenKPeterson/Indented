@@ -6,6 +6,13 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 // To upload to sonatype (have to deploy manually)
 // ./gradlew clean assemble dokkaJar publish
 
+// Log in here:
+// https://oss.sonatype.org
+// Click on "Staging Repositories"
+// Open the "Content" for the latest one you uploaded.
+// If it looks good, "Close" it and wait.
+// When it's really "closed" with no errors, "Release" (and automatically drop) it.
+
 // I think if you can see it here, then it's ready to be "Closed" and deployed manually:
 // https://oss.sonatype.org/content/groups/staging/org/organicdesign/Indented/
 // Here once released:
@@ -19,9 +26,9 @@ val ossrhPassword: String by project
 plugins {
     `maven-publish`
     signing
-    id("org.jetbrains.dokka") version "1.4.0-rc"
-    id("com.github.ben-manes.versions") version "0.29.0"
-    kotlin("jvm") version "1.4.0"
+    id("org.jetbrains.dokka") version "1.4.10"
+    id("com.github.ben-manes.versions") version "0.33.0"
+    kotlin("jvm") version "1.4.10"
 }
 dependencies {
     testImplementation(kotlin("test"))
@@ -30,23 +37,12 @@ dependencies {
 }
 
 group = "org.organicdesign"
-version = "0.0.14"
+version = "0.0.15"
 description = "Make debugging methods whose String output compiles to valid Java or Kotlin and is pretty-print indented for easy reading."
 
 java {
 //    withJavadocJar()
     withSourcesJar()
-}
-
-// This doesn't work.  It's here for a Dokka question or bug report.
-tasks.dokkaHtml.configure {
-    dokkaSourceSets {
-        configureEach { // Or source set name, for single-platform the default source sets are `main` and `test`
-            // List of files with module and package documentation
-            // https://kotlinlang.org/docs/reference/kotlin-doc.html#module-and-package-documentation
-            includes = listOf("package.md", "module.md")
-        }
-    }
 }
 
 tasks.register<Jar>("dokkaJar") {

@@ -18,12 +18,15 @@ Code Style:
 Java:
 Wrapping and Braces:
 Method Call Arguments:
-Align when multilign
+Align when multiline
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.organicdesign/Indented/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.organicdesign/Indented)
 [![javadoc](https://javadoc.io/badge2/org.organicdesign/Indented/javadoc.svg)](https://javadoc.io/doc/org.organicdesign/Indented)
 
 ## Change Log
+### Release 0.0.15 2020-10-06
+ - Bumped dependencies.  Javadoc issues that I noticed all appear fixed.
+
 ### Release 0.0.14 2020-08-30
  - Using this project to report Dokka Javadoc bugs.
  It's still fine to use, just it's my smallest project with the fewest dependencies.
@@ -55,7 +58,7 @@ Align when multilign
 
 ### Release 0.0.7 2019-04-04
  - Renamed StringUtils.objToStr() to indent().
- This is the method is now meant as a catch-all to throw any object at.
+ This is the method is now a catch-all to throw any object at.
  It will treat objects as indented strings when practical, or just call .toString() when not.
 
 #### Release 0.0.6 2019-03-06
