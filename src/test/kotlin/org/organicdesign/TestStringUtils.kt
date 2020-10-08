@@ -8,13 +8,11 @@ import org.organicdesign.indented.StringUtils.fieldsOnOneLineK
 import org.organicdesign.indented.StringUtils.floatToStr
 import org.organicdesign.indented.StringUtils.indent
 import org.organicdesign.indented.StringUtils.iterableToStr
-import org.organicdesign.indented.StringUtils.listToStr
 import org.organicdesign.indented.StringUtils.oneFieldPerLineK
 import org.organicdesign.indented.StringUtils.spaces
 import org.organicdesign.indented.StringUtils.stringify
 import org.organicdesign.indented.toEntry
 import java.io.File
-import java.lang.IllegalStateException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -175,6 +173,32 @@ class TestStringUtils {
     }
 
     @Test
+    fun testIterableToString() {
+        assertEquals("Foo(1,\n" +
+                     "    2,\n" +
+                     "    3)",
+                     iterableToStr(0, "Foo", listOf(1, 2, 3)))
+
+        assertEquals("Foo(1, 2, 3)",
+                     iterableToStr(0, "Foo", listOf(1, 2, 3), singleLine = true))
+
+        assertEquals("Foo(listOf(\"a\",\n" +
+                     "           \"b\",\n" +
+                     "           \"c\"),\n" +
+                     "    listOf(1,\n" +
+                     "           2,\n" +
+                     "           3))",
+                     iterableToStr(0, "Foo", listOf(
+                             listOf("a", "b", "c"),
+                             listOf(1, 2, 3))))
+
+        assertEquals("Foo(listOf(\"a\", \"b\", \"c\"), listOf(1, 2, 3))",
+                     iterableToStr(0, "Foo", listOf(
+                             listOf("a", "b", "c"),
+                             listOf(1, 2, 3)), singleLine = true))
+    }
+
+    @Test
     fun testCompoundTypes() {
         assertEquals("List(1,\n" +
                      "     2,\n" +
@@ -186,15 +210,15 @@ class TestStringUtils {
                      "        3)",
                      indent(0, arrayOf(1, 2, 3)))
 
-        assertEquals("[1,\n" +
-                     " 2,\n" +
-                     " 3]",
-                     listToStr(0, listOf(1, 2, 3)))
-
-        assertEquals("hey[1,\n" +
-                     "    2,\n" +
-                     "    3]",
-                     "hey" + listToStr(3, listOf(1, 2, 3)))
+//        assertEquals("[1,\n" +
+//                     " 2,\n" +
+//                     " 3]",
+//                     listToStr(0, listOf(1, 2, 3)))
+//
+//        assertEquals("hey[1,\n" +
+//                     "    2,\n" +
+//                     "    3]",
+//                     "hey" + listToStr(3, listOf(1, 2, 3)))
 
         assertEquals("helloList(1,\n" +
                      "          2,\n" +
@@ -385,12 +409,19 @@ class TestStringUtils {
                                                     "i" to 3)
                                                      .filter{ it.second != false }
                      ))
-        assertEquals("  MyClass(str=\"hi\", t=true, f=false, i=3)",
+        assertEquals("  MyClass(str=\"hi\", t=true, z=listOf(1 to \"a\", 2 to \"b\", 3 to \"c\"), i=3)",
                      "  " + fieldsOnOneLineK(2, "MyClass",
                                              listOf("str" to "hi",
                                                     "t" to true,
-                                                    "f" to false,
+                                                    "z" to listOf(1 to "a", 2 to "b", 3 to "c"),
                                                     "i" to 3)))
+
+        // "" is a sentinel value to mean an unnamed (positional) parameter.
+        // If we want fields on one line, should sub-fields go on one line too?
+        assertEquals("  MyClass(\"hi\", \"there\", listOf(1, 2, listOf(\"a\", \"b\")))",
+                     "  " + fieldsOnOneLineK(2, "MyClass", listOf("" to "hi",
+                                                                  "" to "there",
+                                                                  "" to listOf(1, 2, listOf("a", "b")))))
     }
 
 }

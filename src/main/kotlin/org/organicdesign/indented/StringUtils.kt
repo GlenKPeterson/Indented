@@ -1,7 +1,6 @@
 package org.organicdesign.indented
 
 import java.io.File
-import java.lang.IllegalStateException
 
 fun <K,V> Pair<K,V>.toEntry() = object: Map.Entry<K,V> {
     override val key: K = first
@@ -68,7 +67,7 @@ object StringUtils {
     /**
      * Efficiently returns a String with the given number of spaces.
      * @param len the number of spaces
-     * @return a [String] with the specificed number of spaces.
+     * @return a [String] with the specified number of spaces.
      */
     @JvmStatic
     fun spaces(len: Int): String =
@@ -91,6 +90,7 @@ object StringUtils {
      * @param entriesAsSymbols If true, treat Map.Entry keys of type String as symbols (don't quote them).
      *        Also if true and a Map.Entry key is "", print only the value ("" is a sentinel value meaning
      *        to print positional parameters).
+     * @param singleLine If true, constrain all sub-collections to a single line.
      */
     @JvmStatic
     @JvmOverloads
@@ -98,7 +98,8 @@ object StringUtils {
             indent: Int,
             collName: String,
             ls: Iterable<Any?>,
-            entriesAsSymbols: Boolean = false
+            entriesAsSymbols: Boolean = false,
+            singleLine: Boolean = false
     ): String {
         val subIndent: Int = indent + collName.length + 1 // + 1 is for the paren.
         val spaces: String = spaces(subIndent)
@@ -106,10 +107,15 @@ object StringUtils {
         val sB = StringBuilder(collName).append("(")
         ls.forEach {
             if (needsComma) {
-                sB.append(",\n").append(spaces)
+                when {
+                    singleLine -> sB.append(", ")
+                    else -> sB.append(",\n").append(spaces)
+                }
                 needsComma = false
             }
-            sB.append(indent(subIndent, it, entriesAsSymbols))
+            sB.append(indent(subIndent, it,
+                             entriesAsSymbols = entriesAsSymbols,
+                             singleLine = singleLine))
             needsComma = true
         }
         return sB.append(")").toString()
@@ -117,9 +123,17 @@ object StringUtils {
 
     /**
      * Pretty-prints any Iterable with the given indent as a list/array.
+     * @param singleLine If true, constrain all sub-collections to a single line.
      */
     @JvmStatic
-    fun listToStr(indent: Int, ls: Iterable<Any?>): String {
+    @JvmOverloads
+    @Deprecated("This just seems like a one-off version of iterableToString with dubious merit.",
+                replaceWith = ReplaceWith("iterableToString(indent, \"listOf\" ls)"))
+    fun listToStr(
+            indent: Int,
+            ls: Iterable<Any?>,
+            singleLine: Boolean = false
+    ): String {
         val subIndent: Int = indent + 1 // + 1 is for the paren.
         val spaces: String = spaces(subIndent)
         return ls.foldIndexed(StringBuilder("["),
@@ -142,7 +156,9 @@ object StringUtils {
             indent: Int,
             collName: String,
             fields: Iterable<Map.Entry<String,Any?>>
-    ): String = iterableToStr(indent, collName, fields, true)
+    ): String = iterableToStr(indent, collName, fields,
+                              entriesAsSymbols = true,
+                              singleLine = false)
 
     /**
      * Kotlin wrapper because Pair does not implement Map.Entry and Pair is not accessible in Java.
@@ -162,17 +178,20 @@ object StringUtils {
             collName: String,
             fields: Iterable<Map.Entry<String,Any?>>
     ): String {
-        val subIndent: Int = indent + collName.length + 1 // + 1 is for the paren.
         var needsComma = false
         val sB = StringBuilder(collName).append("(")
         fields.forEach{
-            val value = it.value
             if (needsComma) {
                 sB.append(", ")
                 needsComma = false
             }
 
-            sB.append(it.key).append("=").append(indent(subIndent, value))
+            sB.append(when (val itemKey = it.key) {
+                          // If we want fields on one line, should sub-fields go on one line too?
+                          "" -> indent(indent + sB.length, it.value, singleLine = true)
+                          else -> "$itemKey=" + indent(indent + sB.length + itemKey.length + 1, it.value,
+                                                       singleLine = true)
+                      })
             needsComma = true
         }
         return sB.append(")").toString()
@@ -194,13 +213,15 @@ object StringUtils {
      * @param entriesAsSymbols If true, treat Map.Entry keys of type String as symbols (don't quote them).
      *        Also if true and a Map.Entry key is "", print only the value ("" is a sentinel value meaning
      *        to print positional parameters).
+     * @param singleLine If true, constrain all sub-collections to a single line.
      */
     @JvmStatic
     @JvmOverloads
     fun indent(
             indent: Int,
             item: Any?,
-            entriesAsSymbols: Boolean = false
+            entriesAsSymbols: Boolean = false,
+            singleLine: Boolean = false
     ): String =
             when (item) {
                 null                  -> "null"
@@ -236,14 +257,14 @@ object StringUtils {
                 }
                 is Char               -> charToStr(item)
                 is Float              -> floatToStr(item)
-                is List<*>            -> iterableToStr(indent, "listOf", item)
-                is Map<*,*>           -> iterableToStr(indent, "mapOf", item.entries)
-                is Set<*>             -> iterableToStr(indent, "setOf", item)
-                is Iterable<*>        -> iterableToStr(indent, item::class.java.simpleName, item)
+                is List<*>            -> iterableToStr(indent, "listOf", item, singleLine = singleLine)
+                is Map<*,*>           -> iterableToStr(indent, "mapOf", item.entries, singleLine = singleLine)
+                is Set<*>             -> iterableToStr(indent, "setOf", item, singleLine = singleLine)
+                is Iterable<*>        -> iterableToStr(indent, item::class.java.simpleName, item, singleLine = singleLine)
 // Interesting, but too much info.
 //                is Array<*>           -> iterableToStr(indent, "arrayOf<${item::class.java.componentType.simpleName}>",
 //                                                       item.toList())
-                is Array<*>           -> iterableToStr(indent, "arrayOf", item.toList())
+                is Array<*>           -> iterableToStr(indent, "arrayOf", item.toList(), singleLine = singleLine)
                 is File               -> {
                     val details = StringBuilder()
                     if(item.exists()) {
