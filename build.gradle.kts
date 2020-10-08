@@ -37,8 +37,8 @@ dependencies {
 }
 
 group = "org.organicdesign"
-version = "0.0.15"
-description = "Make debugging methods whose String output compiles to valid Java or Kotlin and is pretty-print indented for easy reading."
+version = "0.0.16"
+description = "Make debugging methods whose String output compiles to valid Kotlin (like Java) and is pretty-print indented for easy reading."
 
 java {
 //    withJavadocJar()

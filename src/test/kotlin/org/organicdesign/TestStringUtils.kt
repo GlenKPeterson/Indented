@@ -1,5 +1,6 @@
 package org.organicdesign
 
+import org.junit.Assert
 import org.organicdesign.indented.IndentedStringable
 import org.organicdesign.indented.StringUtils.bashSingleQuote
 import org.organicdesign.indented.StringUtils.charToStr
@@ -11,6 +12,7 @@ import org.organicdesign.indented.StringUtils.listToStr
 import org.organicdesign.indented.StringUtils.oneFieldPerLineK
 import org.organicdesign.indented.StringUtils.spaces
 import org.organicdesign.indented.StringUtils.stringify
+import org.organicdesign.indented.toEntry
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -83,69 +85,8 @@ class TestStringUtils {
     @Test(expected = IllegalArgumentException::class)
     fun testSpacesEx2() { spaces(-999) }
 
-    @Test fun testBasics() {
-        assertEquals("arrayOf(1,\n" +
-                     "        2,\n" +
-                     "        3)",
-                     indent(0, arrayOf(1, 2, 3)))
-
-        assertEquals("[1,\n" +
-                     " 2,\n" +
-                     " 3]",
-                     listToStr(0, listOf(1, 2, 3)))
-
-        assertEquals("List(1,\n" +
-                     "     2,\n" +
-                     "     3)",
-                     iterableToStr(0, "List", listOf(1, 2, 3)))
-
-        assertEquals("hey[1,\n" +
-                     "    2,\n" +
-                     "    3]",
-                     "hey" + listToStr(3, listOf(1, 2, 3)))
-
-        assertEquals("helloList(1,\n" +
-                     "          2,\n" +
-                     "          3)",
-                     "hello" + iterableToStr(5, "List", listOf(1, 2, 3)))
-
-
-        assertEquals("mapOf(\"hello\"=Node(Node(null,\n" +
-                     "                        1,\n" +
-                     "                        Node(2)),\n" +
-                     "                   3,\n" +
-                     "                   Node(Node(4),\n" +
-                     "                        5,\n" +
-                     "                        null)),\n" +
-                     "      \"goodbye\"=mapOf(\"world\"=Node(Node(7),\n" +
-                     "                                   8,\n" +
-                     "                                   Node(9)),\n" +
-                     "                      \"hello again\"=listOf(\"the\",\n" +
-                     "                                           \"quick\",\n" +
-                     "                                           \"brown\",\n" +
-                     "                                           \"fox\"),\n" +
-                     "                      \"another\"=listOf(1 to 'a',\n" +
-                     "                                       2 to 'b',\n" +
-                     "                                       3 to 'c')))",
-                     iterableToStr(0, "mapOf",
-                                   mapOf<Any?,Any?>("hello" to Node(Node(null,
-                                                                         1,
-                                                                         Node(2)),
-                                                                    3,
-                                                                    Node(Node(4),
-                                                                         5,
-                                                                         null)),
-                                                    "goodbye" to mapOf<Any?,Any?>("world" to Node(Node(7),
-                                                                                                  8,
-                                                                                                  Node(9)),
-                                                                                  "hello again" to listOf("the",
-                                                                                                          "quick",
-                                                                                                          "brown",
-                                                                                                          "fox"),
-                                                                                  "another" to listOf(1 to 'a',
-                                                                                                      2 to 'b',
-                                                                                                      3 to 'c'))).entries))
-
+    @Test
+    fun testSimpleTypes() {
         assertEquals("null", stringify(null))
 
         assertEquals("\"Hello World\"", stringify("Hello World"))
@@ -217,6 +158,74 @@ class TestStringUtils {
 
         assertEquals("null", indent(0, null))
         assertEquals("'\\\''", indent(0, '\''))
+        assertEquals("\"hello\"=\"hi\"", indent(0, ("hello" to "hi").toEntry()))
+        assertEquals("hello=\"hi\"", indent(0, ("hello" to "hi").toEntry(), entriesAsSymbols = true))
+    }
+
+    @Test
+    fun testCompoundTypes() {
+        assertEquals("List(1,\n" +
+                     "     2,\n" +
+                     "     3)",
+                     iterableToStr(0, "List", listOf(1, 2, 3)))
+
+        assertEquals("arrayOf(1,\n" +
+                     "        2,\n" +
+                     "        3)",
+                     indent(0, arrayOf(1, 2, 3)))
+
+        assertEquals("[1,\n" +
+                     " 2,\n" +
+                     " 3]",
+                     listToStr(0, listOf(1, 2, 3)))
+
+        assertEquals("hey[1,\n" +
+                     "    2,\n" +
+                     "    3]",
+                     "hey" + listToStr(3, listOf(1, 2, 3)))
+
+        assertEquals("helloList(1,\n" +
+                     "          2,\n" +
+                     "          3)",
+                     "hello" + iterableToStr(5, "List", listOf(1, 2, 3)))
+
+
+        assertEquals("mapOf(\"hello\"=Node(Node(null,\n" +
+                     "                        1,\n" +
+                     "                        Node(2)),\n" +
+                     "                   3,\n" +
+                     "                   Node(Node(4),\n" +
+                     "                        5,\n" +
+                     "                        null)),\n" +
+                     "      \"goodbye\"=mapOf(\"world\"=Node(Node(7),\n" +
+                     "                                   8,\n" +
+                     "                                   Node(9)),\n" +
+                     "                      \"hello again\"=listOf(\"the\",\n" +
+                     "                                           \"quick\",\n" +
+                     "                                           \"brown\",\n" +
+                     "                                           \"fox\"),\n" +
+                     "                      \"another\"=listOf(1 to 'a',\n" +
+                     "                                       2 to 'b',\n" +
+                     "                                       3 to 'c')))",
+                     iterableToStr(0, "mapOf",
+                                   mapOf<Any?,Any?>("hello" to Node(Node(null,
+                                                                         1,
+                                                                         Node(2)),
+                                                                    3,
+                                                                    Node(Node(4),
+                                                                         5,
+                                                                         null)),
+                                                    "goodbye" to mapOf<Any?,Any?>("world" to Node(Node(7),
+                                                                                                  8,
+                                                                                                  Node(9)),
+                                                                                  "hello again" to listOf("the",
+                                                                                                          "quick",
+                                                                                                          "brown",
+                                                                                                          "fox"),
+                                                                                  "another" to listOf(1 to 'a',
+                                                                                                      2 to 'b',
+                                                                                                      3 to 'c'))).entries))
+
     }
 
     @Test fun testBashStrongQuote() {
@@ -268,30 +277,103 @@ class TestStringUtils {
 
     @Test fun testOneFieldPerLine() {
         var f = File("yes")
-        assertEquals("  MyClass(str=\"hi\",\n" +
-                     "          f=File(\"${f.canonicalPath}\"),\n" +
-                     "          t,\n" +
-                     "          i=3)",
-                     "  " + oneFieldPerLineK(2, "MyClass",
+        assertEquals("  SomeClassName(str=\"hi\",\n" +
+                     "                file=File(\"${f.canonicalPath}\"),\n" +
+                     "                t=true,\n" +
+                     "                f2=false,\n" +
+                     "                i=3)",
+                     "  " + oneFieldPerLineK(2, "SomeClassName",
                                             listOf("str" to "hi",
-                                                   "f" to f,
+                                                   "file" to f,
                                                    "t" to true,
                                                    "f2" to false,
                                                    "i" to 3)))
 
+        // Example that filters out false booleans
+        assertEquals("  SomeClassName(str=\"hi\",\n" +
+                     "                file=File(\"${f.canonicalPath}\"),\n" +
+                     "                t=true,\n" +
+                     "                i=3)",
+                     "  " + oneFieldPerLineK(2, "SomeClassName",
+                                             listOf("str" to "hi",
+                                                    "file" to f,
+                                                    "t" to true,
+                                                    "f2" to false,
+                                                    "i" to 3).filter { it.second != false }))
+
+        // Example filters out nulls
         f = File("./src/main/kotlin/org/organicdesign/indented/StringUtils.kt")
-        assertEquals("  MyClass(str=\"hi\",\n" +
-                     "          f=File(\"${f.canonicalPath}\" file rw_),\n" +
-                     "          i=3)",
-                     "  " + oneFieldPerLineK(2, "MyClass",
+        assertEquals("  AnotherClass(str=\"hi\",\n" +
+                     "               f=File(\"${f.canonicalPath}\" file rw_),\n" +
+                     "               i=3)",
+                     "  " + oneFieldPerLineK(2, "AnotherClass",
                                              listOf("str" to "hi",
                                                     "f" to f,
-                                                    "i" to 3)))
+                                                    "g" to null,
+                                                    "i" to 3).filter { it.second != null }))
+
+        assertEquals("  MyClass()",
+                     "  " + oneFieldPerLineK(2, "MyClass", listOf()))
 
     }
 
-    @Test fun testFieldsOnOneLine() {
-        assertEquals("  MyClass(str=\"hi\", t, i=3)",
+    @Test
+    fun testOneFieldPerLineExample() {
+        class CookiePrinter(val a: String, val b: String) {
+            override fun toString(): String =
+                    "Cookie(${stringify(a)}, ${stringify(b)})"
+        }
+
+        Assert.assertEquals("FakeHttpServletResponse(status=404,\n" +
+                            "                        committed=true,\n" +
+                            "                        redirect=\"somewhere\",\n" +
+                            "                        contentType=\"text/html;charset=UTF-8\",\n" +
+                            "                        encoding=\"UTF-8\",\n" +
+                            "                        locale=zh_TW,\n" +
+                            "                        cookies=listOf(Cookie(\"cName\", \"cValue\")),\n" +
+                            "                        headers=listOf(\"Hello\"=\"Cupcake\",\n" +
+                            "                                       \"Hello\"=\"Pumpkin\",\n" +
+                            "                                       \"Buddy\"=\"Rich\",\n" +
+                            "                                       \"Two\"=\"2\",\n" +
+                            "                                       \"Two\"=\"3\"),\n" +
+                            "                        outputStream=FakeServletOutputStream(\"Hello World\"))",
+                            oneFieldPerLineK(0, "FakeHttpServletResponse",
+                                             listOf("status" to 404,
+                                                    "committed" to true,
+                                                    "bogus" to null,
+                                                    "redirect" to "somewhere",
+                                                    "contentType" to "text/html;charset=UTF-8",
+                                                    "encoding" to "UTF-8",
+                                                    "locale" to object {
+                                                        override fun toString(): String = "zh_TW"
+                                                    },
+                                                    "cookies" to listOf(CookiePrinter("cName", "cValue")),
+                                                    "headers" to listOf("Hello" to "Cupcake",
+                                                                        "Hello" to "Pumpkin",
+                                                                        "Buddy" to "Rich",
+                                                                        "Two" to "2",
+                                                                        "Two" to "3").map {
+                                                        it.toEntry()
+                                                    },
+                                                    "outputStream" to object {
+                                                        override fun toString(): String =
+                                                                iterableToStr(0, "FakeServletOutputStream", listOf("Hello World"))
+                                                    }
+                                             ).filter { it.second != null }))
+
+    }
+
+    @Test
+    fun testFieldsOnOneLine() {
+        assertEquals("  MyClass(str=\"hi\", t=true, i=3)",
+                     "  " + fieldsOnOneLineK(2, "MyClass",
+                                             listOf("str" to "hi",
+                                                    "t" to true,
+                                                    "f" to false,
+                                                    "i" to 3)
+                                                     .filter{ it.second != false }
+                     ))
+        assertEquals("  MyClass(str=\"hi\", t=true, f=false, i=3)",
                      "  " + fieldsOnOneLineK(2, "MyClass",
                                              listOf("str" to "hi",
                                                     "t" to true,

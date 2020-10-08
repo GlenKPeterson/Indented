@@ -10,7 +10,7 @@ import static org.organicdesign.indented.StringUtils.spaces;
 import static org.organicdesign.indented.StringUtils.stringify;
 
 public class TestStringUtilsJava {
-    class Node implements IndentedStringable {
+    static class Node implements IndentedStringable {
         final Node left;
         final int i;
         final Node right;

@@ -89,20 +89,26 @@ object StringUtils {
      * Pretty-prints any iterable with the given indent and class/field name
      */
     @JvmStatic
-    fun iterableToStr(indent: Int, collName: String, ls: Iterable<Any?>): String {
+    @JvmOverloads
+    fun iterableToStr(
+            indent: Int,
+            collName: String,
+            ls: Iterable<Any?>,
+            entriesAsSymbols: Boolean = false
+    ): String {
         val subIndent: Int = indent + collName.length + 1 // + 1 is for the paren.
         val spaces: String = spaces(subIndent)
-        return ls.foldIndexed(StringBuilder(collName)
-                                      .append("("),
-                              { idx, acc, item ->
-                                  if (idx > 0) {
-                                      acc.append(",\n")
-                                      acc.append(spaces)
-                                  }
-                                  acc.append(indent(subIndent, item))
-                              })
-                .append(")")
-                .toString()
+        var needsComma = false
+        val sB = StringBuilder(collName).append("(")
+        ls.forEach {
+            if (needsComma) {
+                sB.append(",\n").append(spaces)
+                needsComma = false
+            }
+            sB.append(indent(subIndent, it, entriesAsSymbols))
+            needsComma = true
+        }
+        return sB.append(")").toString()
     }
 
     /**
@@ -132,32 +138,7 @@ object StringUtils {
             indent: Int,
             collName: String,
             fields: Iterable<Map.Entry<String,Any?>>
-    ): String {
-        val subIndent: Int = indent + collName.length + 1 // + 1 is for the paren.
-        val spaces: String = spaces(subIndent)
-        var needsComma = false
-        return fields.fold(StringBuilder(collName)
-                                      .append("("),
-                              { acc, item ->
-                                  if (needsComma) {
-                                      acc.append(",\n").append(spaces)
-                                      needsComma = false
-                                  }
-                                  val value = item.value
-                                  if (value is Boolean) {
-                                      if (value == true) {
-                                          acc.append(item.key)
-                                          needsComma = true
-                                      }
-                                  } else {
-                                      acc.append(item.key).append("=").append(indent(subIndent, value))
-                                      needsComma = true
-                                  }
-                                  acc
-                              })
-                .append(")")
-                .toString()
-    }
+    ): String = iterableToStr(indent, collName, fields, true)
 
     /**
      * Kotlin wrapper because Pair does not implement Map.Entry and Pair is not accessible in Java.
@@ -179,27 +160,18 @@ object StringUtils {
     ): String {
         val subIndent: Int = indent + collName.length + 1 // + 1 is for the paren.
         var needsComma = false
-        return fields.fold(StringBuilder(collName)
-                                          .append("("),
-                                  { acc, item ->
-                                      if (needsComma) {
-                                          acc.append(", ")
-                                          needsComma = false
-                                      }
-                                      val value = item.value
-                                      if (value is Boolean) {
-                                          if (value == true) {
-                                              acc.append(item.key)
-                                              needsComma = true
-                                          }
-                                      } else {
-                                          acc.append(item.key).append("=").append(indent(subIndent, value))
-                                          needsComma = true
-                                      }
-                                      acc
-                                  })
-                .append(")")
-                .toString()
+        val sB = StringBuilder(collName).append("(")
+        fields.forEach{
+            val value = it.value
+            if (needsComma) {
+                sB.append(", ")
+                needsComma = false
+            }
+
+            sB.append(it.key).append("=").append(indent(subIndent, value))
+            needsComma = true
+        }
+        return sB.append(")").toString()
     }
 
     /**
@@ -215,15 +187,25 @@ object StringUtils {
      * Takes a shot at pretty-printing anything you throw at it.
      * If it's already an [IndentedStringable], it calls [IndentedStringable.indentedStr].
      * Otherwise takes its best shot at indenting whatever it finds.
+     * @param entriesAsSymbols If true, treat Map.Entry keys of type String as symbols (don't quote them).
      */
     @JvmStatic
-    fun indent(indent: Int, item: Any?): String =
+    @JvmOverloads
+    fun indent(
+            indent: Int,
+            item: Any?,
+            entriesAsSymbols: Boolean = false
+    ): String =
             when (item) {
                 null                  -> "null"
                 is IndentedStringable -> item.indentedStr(indent)
                 is String             -> stringify(item)
                 is Map.Entry<*,*>     -> {
-                    val key = indent(indent, item.key)
+                    val itemKey = item.key
+                    val key: String = when {
+                        entriesAsSymbols && (itemKey is String) -> itemKey
+                        else                                    -> indent(indent, item.key)
+                    }
                     key + "=" + indent(indent + key.length + 1, item.value)
                 }
                 is Pair<*,*>          -> {
