@@ -1,6 +1,7 @@
 package org.organicdesign.indented
 
 import java.io.File
+import java.lang.IllegalStateException
 
 fun <K,V> Pair<K,V>.toEntry() = object: Map.Entry<K,V> {
     override val key: K = first
@@ -87,6 +88,9 @@ object StringUtils {
 
     /**
      * Pretty-prints any iterable with the given indent and class/field name
+     * @param entriesAsSymbols If true, treat Map.Entry keys of type String as symbols (don't quote them).
+     *        Also if true and a Map.Entry key is "", print only the value ("" is a sentinel value meaning
+     *        to print positional parameters).
      */
     @JvmStatic
     @JvmOverloads
@@ -188,6 +192,8 @@ object StringUtils {
      * If it's already an [IndentedStringable], it calls [IndentedStringable.indentedStr].
      * Otherwise takes its best shot at indenting whatever it finds.
      * @param entriesAsSymbols If true, treat Map.Entry keys of type String as symbols (don't quote them).
+     *        Also if true and a Map.Entry key is "", print only the value ("" is a sentinel value meaning
+     *        to print positional parameters).
      */
     @JvmStatic
     @JvmOverloads
@@ -202,11 +208,27 @@ object StringUtils {
                 is String             -> stringify(item)
                 is Map.Entry<*,*>     -> {
                     val itemKey = item.key
-                    val key: String = when {
-                        entriesAsSymbols && (itemKey is String) -> itemKey
-                        else                                    -> indent(indent, item.key)
+                    when {
+                        entriesAsSymbols -> {
+                            when (itemKey) {
+                                // Blank string suppresses key from printing at all in entriesAsSymbols mode
+                                // for showing unnamed parameters (in order)
+                                "" -> {
+                                    indent(indent, item.value)
+                                }
+                                is String -> {
+                                    itemKey + "=" + indent(indent + itemKey.length + 1, item.value)
+                                }
+                                else -> {
+                                    throw IllegalStateException("When entriesAsSymbols is set, the entries must be Strings!")
+                                }
+                            }
+                        }
+                        else -> {
+                            val key: String = indent(indent, item.key)
+                            key + "=" + indent(indent + key.length + 1, item.value)
+                        }
                     }
-                    key + "=" + indent(indent + key.length + 1, item.value)
                 }
                 is Pair<*,*>          -> {
                     val first = indent(indent, item.first)

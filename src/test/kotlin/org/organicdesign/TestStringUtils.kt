@@ -14,6 +14,7 @@ import org.organicdesign.indented.StringUtils.spaces
 import org.organicdesign.indented.StringUtils.stringify
 import org.organicdesign.indented.toEntry
 import java.io.File
+import java.lang.IllegalStateException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -160,6 +161,17 @@ class TestStringUtils {
         assertEquals("'\\\''", indent(0, '\''))
         assertEquals("\"hello\"=\"hi\"", indent(0, ("hello" to "hi").toEntry()))
         assertEquals("hello=\"hi\"", indent(0, ("hello" to "hi").toEntry(), entriesAsSymbols = true))
+        assertEquals("\"hi\"", indent(0, ("" to "hi").toEntry(), entriesAsSymbols = true))
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun testNonStringEntriesAsSymbols() {
+        indent(0, (7 to "hi").toEntry(), entriesAsSymbols = true)
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun testNullEntriesAsSymbols() {
+        indent(0, (null to "hi").toEntry(), entriesAsSymbols = true)
     }
 
     @Test
