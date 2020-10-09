@@ -4,10 +4,11 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.organicdesign.indented.IndentedStringable;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.organicdesign.indented.StringUtils.charToStr;
 import static org.organicdesign.indented.StringUtils.spaces;
 import static org.organicdesign.indented.StringUtils.stringify;
+import static org.organicdesign.indented.StringUtilsKt.nullWhen;
 
 public class TestStringUtilsJava {
     static class Node implements IndentedStringable {
@@ -79,5 +80,19 @@ public class TestStringUtilsJava {
     @Test public void testQuestion() {
         assertEquals("\"\\u0024\"", stringify("$"));
         assertEquals("'\\u0024'", charToStr('$'));
+    }
+
+    @Test public void testNullWhenJ() {
+        assertNotNull(nullWhen(2, 3));
+        assertNull(nullWhen(2, 2));
+
+        assertNotNull(nullWhen("a", "b"));
+        assertNull(nullWhen("hi", "hi"));
+
+        assertNotNull(nullWhen("x", s -> s.equals("y")));
+        assertNull(nullWhen("x", s -> s.equals("x")));
+
+        assertNotNull(nullWhen(2, n -> n > 2));
+        assertNull(nullWhen(2, n -> n > 1));
     }
 }

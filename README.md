@@ -26,6 +26,7 @@ Align when multiline
 ## Change Log
 ### Release 0.0.16 2020-10-08
  - Was able to do away with the implementation of `oneFieldPerLine()` by adding optional `entriesAsSymbols` parameter to `iterableToStr()`
+ - Added `nullWhen()` methods as syntactic sugar for brevity.
  - Deprecated `listToStr()`.  Use `iterableToString()` instead passing it `"listOf"` or `""`.
 
 ### Release 0.0.15 2020-10-06

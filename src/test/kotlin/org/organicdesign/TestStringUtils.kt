@@ -11,10 +11,13 @@ import org.organicdesign.indented.StringUtils.iterableToStr
 import org.organicdesign.indented.StringUtils.oneFieldPerLineK
 import org.organicdesign.indented.StringUtils.spaces
 import org.organicdesign.indented.StringUtils.stringify
+import org.organicdesign.indented.nullWhen
 import org.organicdesign.indented.toEntry
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 class TestStringUtils {
     @Suppress("MemberVisibilityCanBePrivate")
@@ -32,6 +35,21 @@ class TestStringUtils {
                     "${spaces(indent + 5)}$i,\n" +
                     "${spaces(indent + 5)}${right?.indentedStr(indent + 5) ?: "null"})"
                 }
+    }
+
+    @Test
+    fun testNullWhen() {
+        assertNotNull(nullWhen(2, 3))
+        assertNull(nullWhen(2, 2))
+
+        assertNotNull(nullWhen("a", "b"))
+        assertNull(nullWhen("hi", "hi"))
+
+        assertNotNull(nullWhen("x", { it == "y" }))
+        assertNull(nullWhen("x", { it == "x" }))
+
+        assertNotNull(nullWhen(2, { it > 2 }))
+        assertNull(nullWhen(2, { it > 1 }))
     }
 
     // Here's an example of how to make a data structure visible using a very simple binary tree.

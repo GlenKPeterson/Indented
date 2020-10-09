@@ -2,10 +2,33 @@ package org.organicdesign.indented
 
 import java.io.File
 
+/**
+ * Adds a method to Kotlin's Pair to convert it to a Map.Entry.
+ */
 fun <K,V> Pair<K,V>.toEntry() = object: Map.Entry<K,V> {
     override val key: K = first
     override val value: V = second
 }
+
+/**
+ * Utility function that returns null when A equals X, otherwise returns A unchanged.
+ * This is really just syntactic sugar for brevity.
+ */
+fun <A> nullWhen(a: A, x: A) =
+        when (a) {
+            x    -> null
+            else -> a
+        }
+
+/**
+ * Utility function that returns null when f(A) is true, otherwise returns A unchanged.
+ * This is really just syntactic sugar for brevity.
+ */
+fun <A> nullWhen(a: A, f: (A) -> Boolean) =
+        when (f.invoke(a)) {
+            true -> null
+            else -> a
+        }
 
 /**
  * Utilities for producing pretty-print indented strings that could nearly compile to Kotlin or Java
@@ -342,7 +365,7 @@ object StringUtils {
         }
     }
 
-    // Surround strings with double quotes and escape any internal double-quotes
+    /** Surrounds strings with double quotes and escapes any internal double-quotes */
     @JvmStatic
     fun stringify(s: String?): String =
             when (s) {
@@ -356,7 +379,7 @@ object StringUtils {
                 }
             }
 
-    /** Surround strings with double quotes and escape any internal double-quotes */
+    /** Surround chars with single quotes and escape any internal single- or double-quotes */
     @JvmStatic
     fun charToStr(c: Char?): String =
             when (c) {
