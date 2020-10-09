@@ -151,7 +151,8 @@ object StringUtils {
     @JvmStatic
     @JvmOverloads
     @Deprecated("This just seems like a one-off version of iterableToString with dubious merit.",
-                replaceWith = ReplaceWith("iterableToString(indent, \"listOf\" ls)"))
+                replaceWith = ReplaceWith("iterableToStr(indent, \"listOf\", ls, singleLine)",
+                "org.organicdesign.indented.StringUtils.iterableToStr"))
     fun listToStr(
             indent: Int,
             ls: Iterable<Any?>,
