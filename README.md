@@ -24,6 +24,11 @@ Align when multiline
 [![javadoc](https://javadoc.io/badge2/org.organicdesign/Indented/javadoc.svg)](https://javadoc.io/doc/org.organicdesign/Indented)
 
 ## Change Log
+
+### Release 0.0.17 2020-10-09 "Bump"
+ - Commented IndentedStringable with some usage tips.
+ - Bumped all dependencies.
+
 ### Release 0.0.16 2020-10-09 "Sub-Fields on One Line"
  - `fieldsOnOneLine()` now puts sub-fields on one line too.
  - Deprecated `listToStr()`.  Use `iterableToString()` instead passing it `"listOf"` or `""`.

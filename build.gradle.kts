@@ -3,6 +3,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 // Deploying to OSSRH with Gradle
 // https://central.sonatype.org/pages/gradle.html
 
+// gradle --refresh-dependencies dependencyUpdates
+
 // To upload to sonatype (have to deploy manually)
 // ./gradlew clean assemble dokkaJar publish
 
@@ -26,9 +28,9 @@ val ossrhPassword: String by project
 plugins {
     `maven-publish`
     signing
-    id("org.jetbrains.dokka") version "1.4.10"
-    id("com.github.ben-manes.versions") version "0.33.0"
-    kotlin("jvm") version "1.4.10"
+    id("org.jetbrains.dokka") version "1.4.20"
+    id("com.github.ben-manes.versions") version "0.36.0"
+    kotlin("jvm") version "1.4.21"
 }
 dependencies {
     testImplementation(kotlin("test"))
@@ -37,7 +39,7 @@ dependencies {
 }
 
 group = "org.organicdesign"
-version = "0.0.16"
+version = "0.0.17"
 description = "Make debugging methods whose String output compiles to valid Kotlin (like Java) and is pretty-print indented for easy reading."
 
 java {
